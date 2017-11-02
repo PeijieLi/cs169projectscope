@@ -91,10 +91,6 @@ point_distribution1 = File.read './db/fake_data/point_distribution1.json'
 point_distribution2 = File.read './db/fake_data/point_distribution2.json'
 point_distribution3 = File.read './db/fake_data/point_distribution3.json'
 
-smart_story1 = File.read './db/fake_data/smart_story1.json'
-smart_story2 = File.read './db/fake_data/smart_story2.json'
-smart_story3 = File.read './db/fake_data/smart_story3.json'
-
 dummies = Hash.new
 dummies["code_climate"] = [code_climate1, code_climate2, code_climate3]
 dummies["github"] = [github1, github2, github3]
@@ -112,7 +108,6 @@ dummies["github_files"] = [github_files1, github_files2, github_files3]
 dummies["github_flow"] = [github_flow1, github_flow2, github_flow3]
 dummies["tracker_velocity"] = [tracker_velocity1, tracker_velocity2, tracker_velocity3]
 dummies["point_distribution"] = [point_distribution1, point_distribution2, point_distribution3]
-dummies["smart_story"] = [smart_story1, smart_story2, smart_story3]
 
 projects_list = []
 0.upto(10).each do |num|
@@ -150,27 +145,36 @@ projects_list.each do |project|
   end
 end
 
-# preferred_metrics = [{
-#                          'code_climate' => [],
-#                          'test_coverage' => [],
-#                          'pull_requests' => [],
-#                          'github_files' => [],
-#                          'github_flow' => [],
-#                      }, {
-#                          'travis_ci' => [],
-#                          'tracker_velocity' => [],
-#                          'point_estimation' => [],
-#                          'story_overall' => [],
-#                          'slack' => []
-#                      }]
+preferred_metrics = [{
+                         'code_climate' => [],
+                         'test_coverage' => [],
+                         'pull_requests' => [],
+                         'github_files' => [],
+                         'github_flow' => [],
+                     }, {
+                         'travis_ci' => [],
+                         'tracker_velocity' => [],
+                         'point_estimation' => [],
+                         'story_overall' => [],
+                         'slack' => []
+                     }]
 
 @user01 = User.create!(provider_username: "Admin", uid: "uadmin", email: 'uadmin@example.com',
                        provider: "developer", role: User::ADMIN, password: Devise.friendly_token[0,20],
-                       preferred_metrics: [], preferred_projects: projects_list)
+                       preferred_metrics: preferred_metrics, preferred_projects: projects_list)
 @user02 = User.create!(provider_username: "Instructor", uid: "uinstructor", email: 'uinstructor@example.com',
 											 provider: "developer", role: User::INSTRUCTOR, password: Devise.friendly_token[0,20],
-											 preferred_metrics: [], preferred_projects: projects_list)
+											 preferred_metrics: preferred_metrics, preferred_projects: projects_list)
 @user03 = User.create!(provider_username: "Student", uid: "ustudent", email: 'ustudent@example.com',
 											 provider: "developer", role: User::STUDENT, password: Devise.friendly_token[0,20],
-											 preferred_metrics: [], preferred_projects: projects_list)
+											 preferred_metrics: preferred_metrics, preferred_projects: projects_list)
 Whitelist.create!(username: @user01.provider_username)
+
+@course01 = Course.create!(:coursename => "computer science 169", :user_id => @user02.id)
+projects_list.each do |project|
+  project.course_id = @course01.id
+  project.save!
+end
+
+@user03.project_id = projects_list[0].id
+@user03.save!

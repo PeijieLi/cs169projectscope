@@ -30,31 +30,41 @@ module NavigationHelpers
         '/whitelists/new'
       when /^team selection page for student "(.*)"/ then
         "/users/#{User.find_by(provider_username: $1).id}/init"
-      when /^the dashboard page/ then
-        iterations_path
-     
+        
       when /^the "create new iteration" page/ then
-        edit_iteration_path(1)
-      when /^the "iteration dashboard" page/ then
-        iterations_path
-      when /^the "instructor dashboard" page/ then
-        projects_path
-      when /^the "edit iteration index (.*)" page/ then
-        edit_iteration_path($1)
-      when /^the "iteration_(.*) edit" page/ then
-        edit_iteration_path($1)
+        pending
+      when /^the edit iteration page/ then
+        edit_iteration_path
+      when /^the new iteration/ then
+        new_iteration_path
+      when /^the index iteration page/ then
+        iteration_path
+      when /^iteration page for "(.*)"$/ then
+        iter = Iteration.where(name: $1).first
+        iteration_path(id: iter.id)
 
-      when /^task creation page for "(.*)"/ then
-      
-        new_task_view_path(Iteration.find_by_name($1).id)
+      when /^the instructor dashboard page$/ then
+        projects_path
+
+      when /^the course page/ then
+        course_path
+      when /^the new course page$/ then
+        new_course_path
+      when /^the courses page$/ then
+        courses_path
+
+      when /^new task page$/ then
+        new_task_path
+      when /^edit task page for "(.*)"$/ then
+        task = Task.where(title: $1).first
+        edit_task_path(task.id)
 
       # Add more mappings here.
       # Here is an example that pulls values out of the Regexp:
       #
       #   when /^(.*)'s profile page$/i
       #     user_profile_path(User.find_by_login($1))
-      when /^dashboard for "(.*)"/ then
-        edit_iteration_path(Iteration.find_by_name($1).id)
+
       else
         begin
           page_name =~ /^the (.*) page$/

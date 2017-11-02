@@ -1,0 +1,8 @@
+%div{:class => 'col-md-12'}
+  %h3 What's your progress on #{@task.title}?
+
+  = form_tag change_progress_task_path(id: @report.id, task_id: @task.id), :method => :post do
+    = select_tag :status, options_for_select([['Started'], ['Completed'], ['InCompleted'], ['Delivered']])
+    = submit_tag 'Update Progress', :class => "btn btn-primary"
+
+  = link_to 'Back to All Tasks', iteration_path(id: session['iteration_id']), :id => session['iteration_id']

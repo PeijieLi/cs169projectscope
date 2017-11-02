@@ -15,14 +15,13 @@ ProjectMetrics.configure do
   add_metric :project_metric_github_flow
   add_metric :project_metric_tracker_velocity
   add_metric :project_metric_point_distribution
-  add_metric :project_metric_smart_story
 
   add_hierarchy report: [{ title: :github,
                             contents: [] },
                           { title: :pivotal_tracker,
                             contents: %I[pivotal_tracker story_transition] }]
-  add_hierarchy metric: [%I[code_climate test_coverage pull_requests smart_story point_estimation],
-                         %I[travis_ci github_files github_flow story_overall point_distribution]]
+  add_hierarchy metric: [%I[code_climate test_coverage pull_requests github_files github_flow],
+                         %I[travis_ci tracker_velocity point_estimation story_overall point_distribution]]
 end
 
 METRIC_NAMES = {
@@ -32,7 +31,7 @@ METRIC_NAMES = {
   github_files: 'Edited Lines',
   github_flow: 'Commit Frequency',
   travis_ci: 'Build Status',
-  smart_story: 'Story Format',
+  tracker_velocity: 'Velocity',
   point_estimation: 'Story Points',
   story_overall: 'Story Assignment',
   point_distribution: 'Finished Work'

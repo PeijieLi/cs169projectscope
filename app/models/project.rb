@@ -15,6 +15,9 @@ class Project < ActiveRecord::Base
   has_and_belongs_to_many :users
   has_many :ownerships
   has_many :owners, :class_name => "User", :through => :ownerships, :source => :user
+  belongs_to :course
+  has_many :tasks, :through => :taskreports
+  has_many :taskreports
 
   validates :name, :presence => true, :uniqueness => true
 

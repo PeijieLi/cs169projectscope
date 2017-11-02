@@ -1,29 +1,39 @@
-Then(/^I have "(.*)" iterations created$/) do |arg1|
-  if arg1 =~ /\A\d+\z/ #if the arg is a number (always technically a string but we'll convert it)
-    arg1.to_i.times do |num|
-      Iteration.create!(:name => "iteration #{num}", :start => Date.new(1997, 1, 3), :end => Date.new(2017,10,17))
-    end
-  else
-    arr = arg1.split(", ")
-    arr.each do |name|
-      Iteration.create!(:name => name, :start => Date.new(1997, 1, 3), :end => Date.new(2017,10,17))
-    end
-  end
+Then(/^I should see "([^"]*)" link$/) do |link|
+	page.should have_link(link)
 end
 
-Then(/^I should see "(.*)" iterations$/) do |arg1|
-  arg1.to_i.times do |num|
-    expect(page).to have_selector(:css, "a[href='#{edit_iteration_path(num + 1)}']" )
-  end 
+Then(/^I should not see "([^"]*)" link$/) do |link|
+	page.should_not have_link(link)
 end
 
-Then(/^I should see the "(.*)" link/) do |link_name|
-  
-  page.should have_link(link_name)
+Then(/^I should see "([^"]*)" button$/) do |link|
+	page.should have_button(link)
 end
 
-Then(/^I should see the "(.*)" button/) do |button_name|
-  page.should have_button(button_name)
+Given(/^I have "([^"]*)" iterations created$/) do |arg1|
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Then(/^I should see "([^"]*)" iterations$/) do |arg1|
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Then(/^I fill in "(.+)" as "(.+)"$/) do |data, field|
+	fill_in(field, :with => data)
+end
+
+
+Then(/^I should see message "([^"]*)"$/) do |arg|
+	page.should have_content(arg)
+end
+
+Then(/^I should see text "([^"]*)"$/) do |arg|
+	page.should have_content(arg)
+end
+
+Given(/^I have "(.+)" iteration created under "(.+)"$/) do |iter_name, classname|
+	course = Course.where(coursename: classname).first
+	iter = Iteration.create!(name: iter_name, course_id: course.id, start: Time.now.to_date, end: Time.now.to_date + 7.days, release_at: Time.now)
 end
 
 Then /^I fill in "(.*)" date with "(.*)"/ do |name, value|
@@ -35,13 +45,3 @@ Then /^I fill in "(.*)" date with "(.*)"/ do |name, value|
   select vals[1], :from => 'iteration_' + name + '_3i'
   
 end
-
-Then /^I should see each "(.*)"/ do |string|
-  strings = string.split(", ")
-  strings.each do |s|
-    step %Q[I should see "#{s}"]
-  end
-end
-
-
-

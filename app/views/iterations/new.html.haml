@@ -1,0 +1,22 @@
+%p= link_to "Back", projects_path()
+%h1 Create New Iteration
+- if flash[:message]
+  %p= flash[:message]
+
+= form_tag iterations_path(), :method => :post do
+  .form-group
+  = label :iteration, :name, 'Name: '
+  = text_field :iteration, 'name', class: "form-control"
+  %br
+  = label :iteration, :start, 'Start Date: '
+  = date_select :iteration, "start"
+  %br
+  = label :iteration, :end, 'End Date: '
+  = date_select :iteration, :end
+  %br   
+  %br
+  = submit_tag 'Create Iteration', :class => "btn btn-primary"
+
+
+
+     

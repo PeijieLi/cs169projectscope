@@ -2,7 +2,7 @@
   "chartType":"point_estimation",
   "titleText":"Story estimation distribution",
   "data": {
-    "data": ["10", "24"],
-    "series": ["5", "8"]
+    "data": ["8", "10", "24"],
+    "series": ["1", "5", "8"]
   }
 }

@@ -1,87 +1,102 @@
 Feature: add and edit tasks to exisiting iteration
 
-  As an instructor
-  I want to add different tasks to an iteration and order the tasks
-  So that students will know what they need to do in the iteration.
+    As an instructor
+    I want to add tasks to an iteration and order the tasks
+    So that students will know what they need to do in the iteration.
   
-  Background: I am on the instructor-dashboard page
-    Given I am logged in
-    And I have "iteration_1" iterations created
-    And I am on the "iteration dashboard" page
-    # And I am on the dashboard page
-    And I follow "iteration_1"
-    # Then I should be on the "iteration_1 edit" page
+    Background: I am on the instructor-dashboard page
+        Given I am logged in as Instructor with "cs169"
+        And I have "phase 1" iteration created under "cs169"
+        And I am on the courses page
+        And I follow "Show Projects"
+        And I follow "phase 1"
 
-  Scenario: Instructor should see a link to add task
-    Then I should see the "Add new task" link
-	 # Then I should see a link to "Add new task"
+    Scenario: Instructor should see a link to add task
+        Then I should see "Add new task" link
 
-  Scenario: Instructor can create a task
-    
-    Then I follow "Add new task"
-    Then I should be on task creation page for "iteration_1"
-    
-  Scenario: Instructor create a new task for the first time
-    When I follow "Add new task"
-    And I fill in "task_title" with "todo1"
-    And I fill in "task_description" with "first todo"
-    And I press "Create Task"
-    Then I should be on dashboard for "iteration_1"
-    And I should see "Successfully created task"
-    And I should see "first todo"
+    Scenario: Instructor could add a task to interation
+        When I follow "Add new task"
+        And I fill in "task 1-1" as "task_title"
+        And I fill in "collect user stories" as "task_description"
+        And I press "Create Task"
+        Then I should be on iteration page for "phase 1"
+        And I should see message "Successfully created task"
+        And I should see "task 1-1"
+        And I should see "edit" link
+        And I should see "delete" link
 
-  Scenario: task creation must specify task title
-    When I follow "Add new task"
-    And I fill in "task_description" with "first todo"
-    And I press "Create Task"
-    Then I should see "Please fill in all required fields"
-    And I should not see "Successfully created task"
-    And I should be on task creation page for "iteration_1"
+    Scenario: task creation must specify task description
+        When I follow "Add new task"
+        And I fill in "task 1-1" as "task_title"
+        And I press "Create Task"
+        Then I should be on iteration page for "phase 1"
+        And I should see message "Please fill in all required fields"
+        And I should not see "task 1-1"
+        And I should not see "edit" link
+        And I should not see "delete" link
 
-  Scenario: task creation must specify task description
-    When I follow "Add new task"
-    And I fill in "task_title" with "todo1"
-    And I press "Create Task"
-    Then I should see "Please fill in all required fields"
-    And I should not see "Successfully created task"
-    And I should be on task creation page for "iteration_1"
-  
-  Scenario: add more task for a iteration
-    Given I create Task "customer meeting" to "meet with customer"
-    When I follow "Add new task"
-    And I fill in "task_title" with "create low-fi"
-    And I fill in "task_description" with "mock up after the meeting"
-    And I should see "customer meeting"
-    And I check "tasks[customer meeting]"
-    And I press "Create Task"
-    Then I should see "Successfully created task"
-    And I should see "customer meeting"
-    
-  Scenario: edit existing task
-    Given I create Task "customer meeting" to "meet with customer"
-    When I select "customer meeting" and press edit
-    And I fill in "task_title" with "first official meeting"
-    And I fill in "task_description" with "Meeting customer for first time and learn their need"
-    And I press "Save Task"
-    Then I should see "Successfully save changes"
-    And I should see "first official meeting"
-    And I should not see "customer meeting"
+    Scenario: task creation must specify task title
+        When I follow "Add new task"
+        And I fill in "collect user stories" as "task_description"
+        And I press "Create Task"
+        Then I should be on iteration page for "phase 1"
+        And I should see message "Please fill in all required fields"
+        And I should not see "task 1-1"
+        And I should not see "edit" link
+        And I should not see "delete" link
 
+    Scenario: edit existing task
+        Given I follow "Add new task"
+        And I fill in "task 1-1" as "task_title"
+        And I fill in "collect user stories" as "task_description"
+        And I press "Create Task"
+        When I should be on iteration page for "phase 1"
+        And I follow "edit"
+        Then I should be on edit task page for "task 1-1"
+        And I fill in "first task" as "task_title"
+        And I press "Save Task"
+        Then I should be on iteration page for "phase 1"
+        And I should not see "task 1-1"
+        And I should see "first task"
 
-   Scenario: copy tasks button available
-    Given I create Task "todo1" to "todo in iter1"
-    And I go back to iteration dashboard
-    And I have "iteration_2" iterations created
-    And I am on the "iteration dashboard" page
-    And I follow "iteration_2"
-    Then I should see "copy from other iteration"
+    Scenario: add more task for a iteration
+        Given I follow "Add new task"
+        And I fill in "task 1-1" as "task_title"
+        And I fill in "collect user stories" as "task_description"
+        And I press "Create Task"
+        Then I follow "Add new task"
+        And I fill in "task 1-2" as "task_title"
+        And I fill in "write features" as "task_description"
+        And I press "Create Task"
+        Then I should be on iteration page for "phase 1"
+        And I should see "task 1-1" before "task 1-2"
+        And I should see "collect user stories" before "write features"
 
-   Scenario: copy tasks from existing iteration
-    Given I create Task "todo1" to "todo in iter1"
-    And I go back to iteration dashboard
-    And I have "iteration_2" iterations created
-    And I am on the "iteration dashboard" page
-    And I follow "iteration_2"
-    Then I select "iteration_1" to copy
-    Then I press "copy"
-    Then I should see "todo1"
+    Scenario: delete existing task
+        Given I follow "Add new task"
+        And I fill in "task 1-1" as "task_title"
+        And I fill in "collect user stories" as "task_description"
+        And I press "Create Task"
+        When I should be on iteration page for "phase 1"
+        And I follow "delete"
+        Then I should be on iteration page for "phase 1"
+        And I should not see "task 1-1"
+        And I should not see "edit" link
+        And I should not see "delete" link
+
+    Scenario: create task with parent
+        Given I follow "Add new task"
+        And I fill in "111" as "task_title"
+        And I fill in "collect user stories" as "task_description"
+        And I press "Create Task"
+        Then I should be on iteration page for "phase 1"
+        Then I follow "Add new task"
+        And I fill in "222" as "task_title"
+        And I fill in "write features" as "task_description"
+        And I check "tasks[111]"
+        And I press "Create Task"
+        Then I should be on iteration page for "phase 1"
+        And I should see "111"
+        And I should see "222"
+        And Task "111" is parent for Task "222"
+

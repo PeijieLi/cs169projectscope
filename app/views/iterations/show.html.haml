@@ -1,0 +1,105 @@
+%div{:class => 'col-md-12'}
+  - if session['project_id'] != nil
+    - proj = Project.find(session['project_id'])  
+    %h3 Iteration: #{@current_iteration.name} for #{proj.name}
+    %h3 From #{@current_iteration.start.to_date} To #{@current_iteration.end.to_date}
+  - else
+    %h3 Iteration: #{@current_iteration.name}
+    %h3 From #{@current_iteration.start.to_date} To #{@current_iteration.end.to_date}
+  = link_to "Back to Course", course_path(id: session['course_id']), :id => session['course_id']
+
+- if flash[:message]
+  %p= flash[:message]
+<br />
+<br />
+
+- if @user.is_instructor?
+  = link_to('Edit Iteration', edit_iteration_path(id: @current_iteration), :class => "btn btn-primary") +"    " + link_to('Delete Iteration', iteration_path(id: @current_iteration), :method => :delete, :class => "btn btn-primary") + "     "+link_to("Add new task", new_task_path(iteration_id: @current_iteration.id, project_id: params['project_id']), :style => "color: white;text-decoration: none;", :class => "btn btn-primary")+"     "+link_to('Publish Iteration', release_iteration_path(id: @current_iteration), :method => :post, :class => "btn btn-primary")
+
+
+- if @user.is_instructor? and session['project_id'] == nil
+  %h2 Iteration Template for #{@current_iteration.name}
+  %table.table#Tasks
+    %thead
+      -if !@tasks.empty?
+        %h3 Current Tasks:
+        %tr
+          %th="Title"
+          %th="Description"
+          %th="Action"
+    %tbody  
+      - @tasks.each do |t|
+        %tr
+          - if t.created_at > @current_iteration.release_at
+            %td= t.title + "(draft/not released yet)"
+          - else
+            %td= t.title
+          %td= t.description
+          %td= link_to("edit", edit_task_path(id: t.id, iteration_id: @current_iteration.id)) + "   "+ link_to("delete", task_path(id: t.id), method: :delete)
+- elsif @user.is_instructor? and session['project_id'] != nil
+  %table.table#Tasks
+    %thead
+      -if !@student_tasks.empty?
+        %h2 Team Progress:
+        %tr
+          %th="Title"
+          %th="Description"
+          %th="Status"
+    %tbody  
+      - @student_tasks.each do |t|
+        %tr
+          %td= t.title 
+          %td= t.description
+          %td= Taskreport.get_report(t.id, session['project_id'])
+- elsif @user.is_student? and session['project_id'] != nil and @user.project_id == session['project_id']
+  %table.table#Tasks
+    %thead
+      -if !@student_tasks.empty?
+        %h2 Student Dashboard: Current Tasks
+        %tr
+          %th="Title"
+          %th="Description"
+          %th="Status"
+          %th="Action"
+    %tbody  
+      - @student_tasks.each do |t|
+        %tr
+          %td= t.title 
+          %td= t.description
+          %td= Taskreport.get_report(t.id, @user.project_id)
+          %td= link_to("Change Status", progress_task_path(id: t.id), method: :post)
+- elsif @user.is_student? and session['project_id'] != nil and @user.project_id != session['project_id']
+  %table.table#Tasks
+    %thead
+      -if !@student_tasks.empty?
+        %h2 Student Dashboard: Current Tasks
+        %tr
+          %th="Title"
+          %th="Description"
+          %th="Status"
+    %tbody  
+      - @student_tasks.each do |t|
+        %tr
+          %td= t.title 
+          %td= t.description
+          %td= Taskreport.get_report(t.id, params['project_id'])
+
+
+- if @user.is_instructor?
+  %h2 Course Progress Summary
+  - @all_projects.each do |proj|
+    %h3 #{proj.name}
+    %table.table#Tasks
+      %thead
+        -if !@student_tasks.empty?
+          %tr
+            %th="Title"
+            %th="Description"
+            %th="Status"
+      %tbody  
+        - @student_tasks.each do |t|
+          %tr
+            %td= t.title 
+            %td= t.description
+            %td= Taskreport.get_report(t.id, proj.id)
+    = link_to "view project details", project_path(id: proj.id)

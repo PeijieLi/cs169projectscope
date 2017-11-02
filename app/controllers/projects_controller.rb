@@ -9,31 +9,44 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
+    session['project_id'] = nil
     if current_user.is_student?
       if current_user.project.nil?
         redirect_to init_user_path current_user
       else
         redirect_to project_path current_user.project
       end
-    end
-    @current_page = params.has_key?(:page) ? (params[:page].to_i - 1) : 0
-    @display_type = params.has_key?(:type) ? (params[:type]) : 'metric'
-    # @projects = current_user.preferred_projects.empty? ? Project.all : current_user.preferred_projects
-    @projects = Project.all
-    update_session
+    else
+      @current_page = params.has_key?(:page) ? (params[:page].to_i - 1) : 0
+      @display_type = params.has_key?(:type) ? (params[:type]) : 'metric'
+      # @projects = current_user.preferred_projects.empty? ? Project.all : current_user.preferred_projects
+      if current_user.is_instructor?
+        @projects = Project.where('course_id': session['course_id'])
+        @current_course = Course.find(session['course_id'])
+      else
+        @projects = Project.All()
+      end
+      update_session
 
-    metric_min_date = MetricSample.min_date || Date.today
-    @num_days_from_today = (Date.today - metric_min_date).to_i
+      metric_min_date = MetricSample.min_date || Date.today
+      @num_days_from_today = (Date.today - metric_min_date).to_i
+    end
   end
 
   # GET /projects/1
   # GET /projects/1.json
   def show
+    # session['iteration_id'] = nil
+    session['project_id'] = @project.id
     @owners = @project.owners
     @current_page = params.has_key?(:page) ? (params[:page].to_i - 1) : 0
     @display_type = params.has_key?(:type) ? (params[:type]) : 'metric'
     metric_min_date = MetricSample.min_date || Date.today
     @num_days_from_today = (Date.today - metric_min_date).to_i
+    @current_user = current_user
+    course = Course.find(@project.course_id)
+    session['course_id'] = course.id
+    @iterations = course.get_all_iterations
   end
 
   # GET /projects/new

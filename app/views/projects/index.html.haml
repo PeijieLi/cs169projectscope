@@ -1,4 +1,27 @@
 - metric_names = ProjectMetrics.hierarchies :metric
+
+%div{:class => 'col-md-12'}
+  = link_to '<- All Courses', courses_path
+
+%div{:class => 'col-md-12'}
+  / %h3 Iterations
+  - if !@current_course.has_iteration?
+    = "You have not created an interation for this course yet!\n"
+  - else
+    %table.table#iterations
+      %thead
+        %h2 Instructor Dashboard: Iterations
+        %tr
+          %th= "Iteration Name"
+    %tbody
+      - @current_course.get_all_iterations.each do |iteration|
+        %tr
+          %td= link_to iteration.name, iteration_path(id: iteration.id)
+          <br />
+  %br
+  = link_to 'Create Iteration', new_iteration_path(), :class => "btn btn-primary"
+
+
 %div.col-md-6
   %h3#gap Team List
   - if @display_type.eql? 'metric'
@@ -26,10 +49,10 @@
 
 %div{:class => 'col-md-12'}
   -if can? :create, :project
-    = link_to 'Create New Project', new_project_path, :class => "btn btn-primary"
-    = link_to "Iterations", iterations_path, :class => "btn btn-primary"
+    = link_to 'Create New Project', new_project_path(), :class => "btn btn-primary"
   -if can? :manage, :whitelist
-    = link_to 'Privilege Control', whitelists_path, :class => "btn btn-primary"
+    = link_to 'Privilege Control', whitelists_path(), :class => "btn btn-primary"
+
 
 :javascript
   keep_log=false;

@@ -1,0 +1,11 @@
+%p= link_to "Back", courses_path
+%h1 Create New Course
+- if flash[:message]
+    %p= flash[:message]
+= form_tag courses_path(), :method => :post do
+    .form_row
+        .form-group
+        = label :course, :coursename, 'Course Title: '
+        = text_field :course, 'coursename', class: "form-control"
+    .form-group
+        = submit_tag 'Create Course', :class => "btn btn-primary"

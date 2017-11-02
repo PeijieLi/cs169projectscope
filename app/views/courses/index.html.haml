@@ -1,0 +1,16 @@
+%table.table#courses
+    %thead
+        %h2 Courses:
+        %tr
+            %th= "Name"
+            %th= "Details"
+    %tbody
+        - @courses.each do |course|
+            %tr
+            %td= course.coursename
+            %td= link_to "Show Projects", course_path(id: course.id)
+
+%br
+= form_tag new_course_path, :method => :get do
+
+    = submit_tag "Create Course", :class => "btn btn-primary"

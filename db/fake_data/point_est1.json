@@ -3,6 +3,6 @@
   "titleText":"Story estimation distribution",
   "data": {
     "data": ["5", "11", "24", "15"],
-    "series": ["-1", "1", "2", "3"]
+    "series": ["0", "1", "2", "3"]
   }
 }

@@ -3,12 +3,26 @@ Given(/^I am under "([^"]*)"$/) do |page|
 end
 
 Then(/^I should see a link to "([^"]*)"$/) do |web|
-  steps %Q{ I should see the "#{web}" link}
-   # Write code here that turns the phrase above into concrete actions
+  pending # Write code here that turns the phrase above into concrete actions
 end
 
-Then(/^I should be redirect to dashboard page$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+Then(/^I redirect to iteration page for "([^"]*)" and "([^"]*)"$/) do |itername, classname|
+	iter = Iteration.where(name: itername).first
+	cla = Course.where(coursename: classname).first
+	params[course_id: cla.id]
+	print "hahahahah"
+	print "/iterations/#{iter.id}?course_id=#{cla.id}"
+	visit "/iterations/#{iter.id}?course_id=#{cla.id}"
+end
+
+Then(/^Task "(.*)" is parent for Task "(.*)"$/) do |parent, child|
+	parent_task = Task.where(title: parent)
+	child_task = Task.where(title: child)
+	child_task.parents.length == 1
+end
+
+Then(/^I goto courses page$/) do
+	visit path_to("the courses page")
 end
 
 Then(/^I should see "([^"]*)" under "([^"]*)"$/) do |content, tag|
@@ -25,51 +39,9 @@ Given(/^I select "([^"]*)" and press edit$/) do |task|
 end
 
 Given (/^I create Task "([^"]*)" to "([^"]*)"$/) do |title, description|
-  iter = Iteration.find_by_name("iteration_1")
-  t1 = Task.new
-  t1.iteration=iter
-  t1.title=title
-  t1.description=description
-  t1.save
-  # pending
-end
-Given("I go back to iteration dashboard") do
-  pending # Write code here that turns the phrase above into concrete actions
+  pending
 end
 
-Then("I select {string} to copy") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
+And (/^I  am on Iteration "([^"]*)"$/) do |iter|
+  pending
 end
-
-Given("Create team {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then("I should see graph for {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then("I follow the graph for {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Then("I edit {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Given("I am logged in as {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-Given("I select {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
-
-# And (/^I  am on Iteration "([^"]*)"$/) do |iter|
-#   steps %Q{
-#     And I have "iteration_1, iteration_2" iterations created
-#     And I am on the "iteration dashboard" page
-#     Then I should see the "iteration_1" link
-#     When I follow "iteration_1"
-#   }
-# end

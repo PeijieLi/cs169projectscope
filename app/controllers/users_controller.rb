@@ -2,6 +2,9 @@ class UsersController < ApplicationController
   #before_action :authenticate_user!, :validate_current_user
   load_and_authorize_resource
 
+  def index
+  end
+
   def show
     @user = User.find(params[:id])
     @all_projects = Project.all

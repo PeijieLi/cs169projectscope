@@ -77,6 +77,21 @@ And(/^I am logged in$/) do
   # sleep(1)
 end
 
+Given(/^I am logged in as Instructor$/) do
+  instr_user = User.create!(provider_username: "Instructor", uid: "uinstructor", email: 'uinstructor@example.com',
+                            provider: "developer", role: User::INSTRUCTOR, password: Devise.friendly_token[0,20])
+  ENV['INSTRUCTOR_PASSWORD'] = 'password'
+  visit "/login/#{instr_user.uid}?passwd=password"
+end
+
+Given(/^I am logged in as Instructor with "(.*)"$/) do |coursename|
+  instr_user = User.create!(provider_username: "Instructor", uid: "uinstructor", email: 'uinstructor@example.com',
+                            provider: "developer", role: User::INSTRUCTOR, password: Devise.friendly_token[0,20])
+  ENV['INSTRUCTOR_PASSWORD'] = 'password'
+  course = Course.create!(coursename: coursename, user_id: instr_user.id)
+  visit "/login/#{instr_user.uid}?passwd=password"
+end
+
 Given /^user with username "(.*)" exists/ do |name|
   User.create :provider_username => name, :password => Devise.friendly_token[0,20]
 end

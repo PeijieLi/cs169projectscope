@@ -1,0 +1,21 @@
+%p= link_to "Back", iteration_path(session[:iteration_id])
+%div{:class => 'col-md-12'}
+  = @task.title
+  <br />
+
+%h2 Edit Task "#{@task.title}":
+= form_tag task_path(@task.id), :method => :put do
+  %br
+  .form-group
+    = label :task, :title, 'Title: '
+    = text_field :task, 'title', class: "form-control"
+  %br
+  .form-group
+    = label :task, :description, 'Description: '
+    = text_field :task, 'description', class: "form-control"
+  %br
+    = submit_tag 'Save Task', :class => "btn btn-primary"
+    
+%br
+= form_tag task_path(id: @task), :method => :delete do
+  = submit_tag 'Delete Task', :class => "btn btn-primary"

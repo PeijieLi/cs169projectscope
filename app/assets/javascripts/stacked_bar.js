@@ -4,15 +4,8 @@
 
 function stacked_bar(containerID, data, stacked_items) {
     var color = d3.scaleOrdinal()
-        .range([
-            '#90ed7d',
-            '#f7a35c',
-            '#8085e9',
-            '#f15c80',
-            '#e4d354',
-            '#2b908f',
-            '#f45b5b',
-            '#91e8e1'])
+        .range(['#90ed7d', '#f7a35c', '#8085e9',
+            '#f15c80', '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'])
         .domain(stacked_items);
     var values = [];
     stacked_items.forEach(function (item) {

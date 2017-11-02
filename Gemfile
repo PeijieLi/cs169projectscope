@@ -20,7 +20,6 @@ gem 'project_metric_github_files', git: 'https://github.com/an-ju/project_metric
 gem 'project_metric_github_flow', git: 'https://github.com/an-ju/project_metric_github_flow.git'
 gem 'project_metric_tracker_velocity', git: 'https://github.com/an-ju/project_metric_tracker_velocity.git'
 gem 'project_metric_point_distribution', git: 'https://github.com/an-ju/project_metric_point_distribution.git'
-gem 'project_metric_smart_story', git: 'https://github.com/an-ju/project_metric_smart_story.git'
 
 gem 'highcharts-rails'
 

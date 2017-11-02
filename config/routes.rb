@@ -8,8 +8,8 @@ Rails.application.routes.draw do
     end
   end
   resources :projects do
-    member do
-      post "/add_owner", :to => "projects#add_owner"
+  	member do
+  		post "/add_owner", :to => "projects#add_owner"
       get '/metrics/:metric', :to => 'projects#get_metric_data'
       get '/metrics/:metric/series', :to => 'projects#get_metric_series'
       get '/metrics/:metric/detail', to: 'projects#show_metric'
@@ -18,15 +18,22 @@ Rails.application.routes.draw do
   end
   resources :whitelists, :only => [:index] do
     member do
-      put 'upgrade', to: 'whitelists#upgrade'
-      put 'downgrade', to: 'whitelists#downgrade'
+      put 'upgrade', :to => 'whitelists#upgrade'
+      put 'downgrade', :to => 'whitelists#downgrade'
     end
   end
-  resources :metric_samples, only: [:index] do
+
+  resources :courses
+
+  resources :tasks do
     member do
-      get '/:metric/series', to: 'projects#get_metric_series'
-      get '/:metric/detail', to: 'projects#show_metric'
-      get '/:metric/report', to: 'projects#show_report'
+      post "/progress", :to => "tasks#progress"
+      post "/change_progress", :to => "tasks#change_progress"
+    end
+  end
+  resources :iterations do
+    member do
+      post "/release", :to => "iterations#release"
     end
   end
 
@@ -36,13 +43,8 @@ Rails.application.routes.draw do
 
   get '/login/:id', :to => 'application#passthru', :as => 'passthru'
   post '/log', to: 'projects#write_log'
-  
 
-  resources :iterations, :except => [:show]
-  get '/task/:iter/new', :to =>'task#new', :as => 'new_task_view'
-  post '/task/:iter/create', :to =>'task#create', :as => 'create_new_task'
-  get '/task/:id/edit', :to =>'task#edit', :as =>'edit_task'
 
-  root 'projects#index'
-
+  # root 'projects#index'
+  root 'courses#index'
 end
