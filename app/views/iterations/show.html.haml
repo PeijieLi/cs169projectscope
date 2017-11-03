@@ -14,7 +14,7 @@
 <br />
 
 - if @user.is_instructor?
-  = link_to('Edit Iteration', edit_iteration_path(id: @current_iteration), :class => "btn btn-primary") +"    " + link_to('Delete Iteration', iteration_path(id: @current_iteration), :method => :delete, :class => "btn btn-primary") + "     "+link_to("Add new task", new_task_path(iteration_id: @current_iteration.id, project_id: params['project_id']), :style => "color: white;text-decoration: none;", :class => "btn btn-primary")+"     "+link_to('Publish Iteration', release_iteration_path(id: @current_iteration), :method => :post, :class => "btn btn-primary")
+  = link_to('Edit Iteration', edit_iteration_path(id: @current_iteration), :class => "btn btn-primary") +"    " + link_to('Delete Iteration', iteration_path(id: @current_iteration), :method => :delete, :class => "btn btn-primary") + "     "+link_to("Add new task", new_task_path(iteration_id: @current_iteration.id, project_id: params['project_id']), :style => "color: white;text-decoration: none;", :class => "btn btn-primary")+"     "+link_to('Publish Iteration', release_iteration_path(id: @current_iteration), :method => :post, :class => "btn btn-primary") + "     "+link_to('Abandon Changes', abandon_iteration_path(id: @current_iteration), :method => :post, :class => "btn btn-primary")
 
 
 - if @user.is_instructor? and session['project_id'] == nil
@@ -30,12 +30,20 @@
     %tbody  
       - @tasks.each do |t|
         %tr
-          - if t.created_at > @current_iteration.release_at
+          - if session['dying_tasks'].include? t.id.to_s
+            %td= t.title + "(to be deleted)"
+          - elsif session['task_updates'].has_key? t.id.to_s
+            %td= t.title + "(=>"+session['task_updates'][t.id.to_s]['title']+")"
+          - elsif t.created_at > @current_iteration.release_at
             %td= t.title + "(draft/not released yet)"
           - else
             %td= t.title
-          %td= t.description
+          - if session['task_updates'].has_key? t.id.to_s
+            %td= t.description + "(=>" + session['task_updates'][t.id.to_s]['description']+")"
+          - else
+            %td= t.description
           %td= link_to("edit", edit_task_path(id: t.id, iteration_id: @current_iteration.id)) + "   "+ link_to("delete", task_path(id: t.id), method: :delete)
+
 - elsif @user.is_instructor? and session['project_id'] != nil
   %table.table#Tasks
     %thead
@@ -84,7 +92,8 @@
           %td= t.description
           %td= Taskreport.get_report(t.id, params['project_id'])
 
-
+%h3
+%h3
 - if @user.is_instructor?
   %h2 Course Progress Summary
   - @all_projects.each do |proj|

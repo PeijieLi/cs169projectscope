@@ -1,10 +1,49 @@
 class IterationsController < ApplicationController
 
+    def abandon
+        @iteration = Iteration.find(params[:id])
+        if session['dying_tasks'] == nil
+            session['dying_tasks'] = []
+        else
+            to_delete = session['dying_tasks'].uniq.reject {|t| Task.find(t.to_i).iteration_id != @iteration.id}
+            to_delete.each do |d|
+                session['dying_tasks'].delete(d)
+            end
+        end
+
+        # abandon any modification (not creation nor deletion)
+        if session['task_updates'].size != 0
+            to_abandon = session['task_updates'].keys.reject {|t| Task.find(t.to_i).iteration_id != @iteration.id}
+            to_abandon.each do |d|
+                session['task_updates'].delete(d)
+            end
+        end
+        redirect_to iteration_path(id: params[:id])
+    end
+
     def release
         @iteration = Iteration.find(params[:id])
         @iteration.release_at = Time.now
         @iteration.save
         flash[:message] = "Successfully published iteration!"
+        if session['task_updates'].size != 0
+            to_abandon = session['task_updates'].keys.reject {|t| Task.find(t.to_i).iteration_id != @iteration.id}
+            to_abandon.each do |d|
+                updates = session['task_updates'][d]
+                Task.find(d.to_i).update_attributes!(updates)
+                session['task_updates'].delete(d)
+            end
+        end
+
+        if session['dying_tasks'] == nil
+            session['dying_tasks'] = []
+        else
+            to_delete = session['dying_tasks'].uniq.reject {|t| Task.find(t.to_i).iteration_id != @iteration.id}
+            to_delete.each do |d|
+                session['dying_tasks'].delete(d)
+                Task.find(d.to_i).destroy
+            end
+        end
         redirect_to iteration_path(id: params[:id])
     end
 
@@ -29,6 +68,7 @@ class IterationsController < ApplicationController
 	end
 
 	def show
+        # gsgs
         if current_user.is_instructor?
             session['project_id'] = nil
         end
@@ -38,6 +78,7 @@ class IterationsController < ApplicationController
         @student_tasks = @tasks.reject {|t| t.created_at > @current_iteration.release_at}
         @user = current_user
         @all_projects = Project.where(course_id: session['course_id'])
+        # gesgesg
 	end
 
 	def create

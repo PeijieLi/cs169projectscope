@@ -5,6 +5,9 @@ class ApplicationController < ActionController::Base
   before_action :log_user
 
   def passthru
+    :reset_session
+    session['dying_tasks'] = []
+    session['task_updates'] = {} # updates are hashes
     if params[:passwd].eql? ENV['ADMIN_PASSWORD']
       user_id = params[:id]
       sign_in_and_redirect User.find_by(uid: user_id)

@@ -41,13 +41,24 @@ class TasksController < ApplicationController
         to_sub = {} #this is the new array we will pass to Iteration to create a new iteration
         to_sub["title"] = task_params["title"]
         to_sub["description"] = task_params["description"]
-        @task = Task.find params[:id]
-        @task.update_attributes!(to_sub)
+        # store updates to session (merge with current)
+        if session['task_updates'].has_key? params[:id]
+            old = session['task_updates'][params[:id]]
+            session['task_updates'][params[:id]] = old.merge(to_sub)
+        else
+            session['task_updates'][params[:id]] = to_sub
+        end
+        # @task = Task.find params[:id]
+        # @task.update_attributes!(to_sub)
         redirect_to iteration_path(id: session['iteration_id'])
     end
 
     def destroy
-        Task.find(params[:id]).destroy
+        if session['dying_tasks'] == nil
+            session['dying_tasks'] = []
+        end
+        session['dying_tasks'].push(params[:id])
+        # Task.find(params[:id]).destroy
         redirect_to iteration_path(id: session['iteration_id'])
     end
 

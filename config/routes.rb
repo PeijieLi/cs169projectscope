@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   resources :iterations do
     member do
       post "/release", :to => "iterations#release"
+      post "/abandon", :to => "iterations#abandon"
     end
   end
 

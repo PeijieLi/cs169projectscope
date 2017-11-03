@@ -79,6 +79,7 @@ Feature: add and edit tasks to exisiting iteration
         And I press "Create Task"
         When I should be on iteration page for "phase 1"
         And I follow "delete"
+        And I follow "Publish Iteration"
         Then I should be on iteration page for "phase 1"
         And I should not see "task 1-1"
         And I should not see "edit" link
