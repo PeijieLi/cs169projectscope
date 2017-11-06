@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171103185836) do
+ActiveRecord::Schema.define(version: 20171106064443) do
 
   create_table "comments", force: :cascade do |t|
     t.integer  "metric_sample_id"
@@ -102,6 +102,18 @@ ActiveRecord::Schema.define(version: 20171103185836) do
   add_index "student_tasks", ["iteration_id"], name: "index_student_tasks_on_iteration_id"
   add_index "student_tasks", ["project_id"], name: "index_student_tasks_on_project_id"
   add_index "student_tasks", ["student_task_id"], name: "index_student_tasks_on_student_task_id"
+
+  create_table "task_updates", force: :cascade do |t|
+    t.string   "before"
+    t.string   "after"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "user_id"
+    t.integer  "student_task_id"
+  end
+
+  add_index "task_updates", ["student_task_id"], name: "index_task_updates_on_student_task_id"
+  add_index "task_updates", ["user_id"], name: "index_task_updates_on_user_id"
 
   create_table "tasks", force: :cascade do |t|
     t.string   "title"

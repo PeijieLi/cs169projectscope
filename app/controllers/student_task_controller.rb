@@ -103,10 +103,22 @@ class StudentTaskController < ApplicationController
     #change the status of a task from student
 
     def update_status
-        task = StudentTask.find( params[:id])
-        task.status = (params[:status])
-        task.save
-        redirect_to team_index_path(task.iteration_id)
+          task = StudentTask.find( params[:id])
+        if(task.status==params[:status])
+            redirect_to team_index_path(task.iteration_id)
+            return 
+        else
+          
+            history = TaskUpdate.new
+            history.user_id=current_user.id
+            history.before = task.status
+            history.after = params[:status]
+            history.student_task_id=task.id
+            history.save
+            task.status = (params[:status])
+            task.save
+            redirect_to team_index_path(task.iteration_id)
+        end
     end
     
     #show the detailed graph of a team for instructor
