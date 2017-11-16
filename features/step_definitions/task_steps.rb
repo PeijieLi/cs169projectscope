@@ -108,7 +108,7 @@ end
 Given("I finish task {string}") do |string|
   # find('#status').select("Finished")
   steps %Q{ 
-    Then I select "Finished" For "#{string}"}
+    Then I select "Finished" for "#{string}"}
    # Write code here that turns the phrase above into concrete actions
 end
 Given ( "I should not see dropdown menu for {string}") do|string|
