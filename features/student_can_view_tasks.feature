@@ -17,7 +17,6 @@ Feature: student can view tasks for each iteration
     And I should see "customer meeting"
     And I check "tasks[customer meeting]"
     And I press "Create Task"
-
     And I follow "Publish tasks"
     And I follow "Logout"
     Given I am logged in as "team1"

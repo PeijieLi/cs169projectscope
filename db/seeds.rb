@@ -12,6 +12,7 @@
 User.delete_all
 Whitelist.delete_all
 Project.delete_all
+Comment.delete_all
 MetricSample.delete_all
 
 

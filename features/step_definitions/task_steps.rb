@@ -83,6 +83,23 @@ Given("I select {string}") do |string|
   
 end
 
+
+Then(/^I should see "([^"]*)" with status "([^"]*)"$/) do |tasktitle, status|
+  pending
+end
+
+Then("I should see dropdown menu for {string}") do |string|
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Given("I should see dropdown menu for {string}") do |string|
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
+Given("I finish task {string}") do |string|
+  pending # Write code here that turns the phrase above into concrete actions
+end
+
 # And (/^I  am on Iteration "([^"]*)"$/) do |iter|
 #   steps %Q{
 #     And I have "iteration_1, iteration_2" iterations created
