@@ -15,7 +15,7 @@
                 %td= t.status
                 %td
                     - if !t.is_blocked
-                        = form_tag update_status_path(t.id), :method => :put do 
-                            = select_tag(:status,options_for_select([["In Screen", "In Screen"], ["In Process", "In Process"], ["Finished", "Finished"]]))
-                            = submit_tag 'Save', :class => "btn btn-primary left"
+                        = form_tag update_status_path(t.id), :method => :put, :name =>"form:"+t.title do 
+                            = select_tag((t.title+"status").to_sym, options_for_select([["In Screen", "In Screen"], ["In Process", "In Process"], ["Finished", "Finished"]]))
+                            = submit_tag 'Save For '+t.title, :class => "btn btn-primary left"
                 

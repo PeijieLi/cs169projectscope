@@ -104,18 +104,19 @@ class StudentTaskController < ApplicationController
 
     def update_status
           task = StudentTask.find( params[:id])
-        if(task.status==params[:status])
+          statusKey =task.title+"status"
+        if(task.status==params[statusKey])
             redirect_to team_index_path(task.iteration_id)
             return 
         else
-          
+            puts task.title+"status"+params[statusKey]
             history = TaskUpdate.new
             history.user_id=current_user.id
             history.before = task.status
-            history.after = params[:status]
+            history.after = params[statusKey]
             history.student_task_id=task.id
             history.save
-            task.status = (params[:status])
+            task.status = (params[statusKey])
             task.save
             redirect_to team_index_path(task.iteration_id)
         end

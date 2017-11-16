@@ -66,7 +66,7 @@ Then("I edit {string}") do |string|
 end
 
 Given("I am logged in as {string}") do |string|
-   admin_user = User.create!(provider_username: "Admin_stu", uid: "uadmin_stu", email: 'uadmin_stu@example.com',
+  admin_user = User.create!(provider_username: "Admin_stu", uid: "uadmin_stu", email: 'uadmin_stu@example.com',
                             provider: "developer", role: User::STUDENT, password: Devise.friendly_token[0,20])
   ENV['ADMIN_PASSWORD'] = 'password'
   puts "log in"
@@ -85,21 +85,43 @@ end
 
 
 Then(/^I should see "([^"]*)" with status "([^"]*)"$/) do |tasktitle, status|
-  pending
+   steps %Q{ 
+    Then I should see "#{status}"
+    }
 end
 
-Then("I should see dropdown menu for {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
-end
 
 Given("I should see dropdown menu for {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
+   steps %Q{ 
+    Then I should see the "Save For #{string}" button
+    }
+   # Write code here that turns the phrase above into concrete actions
 end
+
+
+# When("I select {status} for {task}") do |status, task|
+  
+#     # select(status,:from=>task+'status')
+
+# end
 
 Given("I finish task {string}") do |string|
-  pending # Write code here that turns the phrase above into concrete actions
+  # find('#status').select("Finished")
+  steps %Q{ 
+    Then I select "Finished" For "#{string}"}
+   # Write code here that turns the phrase above into concrete actions
 end
-
+Given ( "I should not see dropdown menu for {string}") do|string|
+  # select_box = find()
+  expect(page).not_to have_selector("#form:"+string)
+  # expect("#form:"+string).not_to be_present
+end
+When("I select {string} for {string}") do |string, string2|
+  # pending # Write code here that turns the phrase above into concrete actions
+  select(string,:from=>string2+'status')
+  steps %Q{ 
+    Then I press "Save For #{string2}"}
+end
 # And (/^I  am on Iteration "([^"]*)"$/) do |iter|
 #   steps %Q{
 #     And I have "iteration_1, iteration_2" iterations created

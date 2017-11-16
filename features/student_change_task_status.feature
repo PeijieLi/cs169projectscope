@@ -28,35 +28,31 @@ Feature: student change status of tasks
 
 
     Scenario: students should be able to change status of a parentless task
-        And I should see "Iterations"
-        And I follow "Iterations"
+
         Then I should see "customer meeting" with status "In Screen"
         And I should see dropdown menu for "customer meeting"
         When I select "Finished"
-        And I follow "Save"
+        And I press "Save For customer meeting"
         Then I should see "customer meeting" with status "Finished"
 
     Scenario: students should not be able to change status of task with non-finished parent
-        And I should see "Iterations"
-        And I follow "Iterations"
+ 
         And I should see "customer meeting" with status "In Screen"
         And I should see "create low-fi" with status "In Screen"
-        And I should see dropdown menu for "create low-fi"
-        When I select "Finished"
-        And I follow "Save"
-        Then I should see "Finish Parent task first!"
+        And I should not see dropdown menu for "create low-fi"
+
 
     Scenario: finish task with parent all completed
-        And I should see "Iterations"
-        And I follow "Iterations"
+       
+     
         Then I should see "customer meeting" with status "In Screen"
         And I should see dropdown menu for "customer meeting"
-        When I select "Finished"
-        And I follow "Save"
+        When I select "Finished" for "customer meeting"
+        # And I press "Save For customer meeting"
         Then I should see "customer meeting" with status "Finished"
         And I should see dropdown menu for "create low-fi"
-        When I select "Finished"
-        And I follow "Save"
+        When I select "Finished" for "create low-fi"
+        And I press "Save For create low-fi"
         Then I should see "create low-fi" with status "Finished"
 
 
