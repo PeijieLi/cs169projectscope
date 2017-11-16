@@ -23,6 +23,8 @@ Feature: view student progress history
         And I follow "Logout"
 
         Given I am logged in as "team1"
+        And I go to iteration dashboard
+        And I follow "iteration_1"
         And I finish task "customer meeting"
         And I follow "Logout"
 
