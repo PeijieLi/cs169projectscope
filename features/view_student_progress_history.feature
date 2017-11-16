@@ -29,14 +29,18 @@ Feature: view student progress history
         And I follow "Logout"
 
     Scenario: Instructor can see student status history
-        Given I am logged in
+        Given I am logged in again
+        And I go to iteration dashboard
+        And I follow "iteration_1"
         And I follow "team1"
-        Then I should see "Progress History"
-        And I should see "custimer meeting finished"
+        And I view history for "customer meeting"
+        And I should see "updated from In Screen to Finished"
 
     Scenario: Student can see student status history
-        Given I am logged in as "team1"
-        Then I should see "Progress History"
-        And I should see "custimer meeting finished"
+        Given I am logged in as "team1" again
+        And I go to iteration dashboard
+        And I follow "iteration_1"
+        And I follow "customer meeting"
+        And I should see "updated from In Screen to Finished"
 
 
