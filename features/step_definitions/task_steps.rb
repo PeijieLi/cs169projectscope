@@ -81,13 +81,13 @@ Given("I am logged in as {string} again") do |string|
   ENV['ADMIN_PASSWORD'] = 'password'
   project_id = Project.find_by_name(string).id
   admin_user = User.where(:project_id =>project_id)[0]
-  # if admin_user == nil:
-  #   admin_user = User.create!(provider_username: "Admin_stu", uid: "uadmin_stu", email: 'uadmin_stu@example.com',
-  #                           provider: "developer", role: User::STUDENT, password: Devise.friendly_token[0,20])
+  if admin_user == nil
+    admin_user = User.create!(provider_username: "Admin_stu", uid: "uadmin_stu", email: 'uadmin_stu@example.com',
+                            provider: "developer", role: User::STUDENT, password: Devise.friendly_token[0,20])
 
-  #   admin_user.project_id = Project.find_by_name(string).id
-  #   admin_user.save
-  # end
+    admin_user.project_id = project_id
+    admin_user.save
+  end
   visit "/login/#{admin_user.uid}?passwd=password"
 
 end
