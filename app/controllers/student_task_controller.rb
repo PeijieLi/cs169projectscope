@@ -126,7 +126,7 @@ class StudentTaskController < ApplicationController
     def showATeamForInstructor
         @team = Project.find(params[:team])
         iter = params[:iter]
-        @tasks = StudentTask.where('iteration_id': iter, 'project_id': @team.id)
+        @tasks = StudentTask.topological_sort(iter, @team.id)
         #todo: diplay the tasks 
     end
 end
