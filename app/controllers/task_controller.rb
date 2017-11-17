@@ -18,6 +18,7 @@ class TaskController < ApplicationController
         all_old_copied_tasks.each do|e|
             e.destroy
         end
+        puts StudentTask.where('iteration_id': params[:iter]).length
         #to do : copy the tasks to all the teams
         teams = Project.all
         teams.each do |team|

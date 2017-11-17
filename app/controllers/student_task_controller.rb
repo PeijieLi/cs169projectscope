@@ -9,7 +9,7 @@ class StudentTaskController < ApplicationController
             team = Project.all[0]
         end
         
-        @tasks = StudentTask.where('iteration_id': iter, 'project_id': team.id)
+        @tasks = StudentTask.topological_sort(iter, team.id)
         #to do : display the tasks in the view
         
     end

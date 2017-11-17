@@ -6,7 +6,27 @@ class StudentTask < ActiveRecord::Base
         self.parents.push(p)
         self.save
     end
-     def get_parents
+    def self.topological_sort(iter_id,team_id)
+        tasks = StudentTask.where('iteration_id': iter_id, 'project_id': team_id)
+        result = []
+        while result.length < tasks.length do
+            tasks.each do|t|
+                if !result.include?(t)&&t.not_block?(result)
+                    result.push(t)
+                end
+            end
+        end
+        return result
+    end
+    def not_block?(exist_task)
+        self.parents.each do |p|
+            if !exist_task.include?(p)
+                return false
+            end
+        end
+        return true
+    end
+    def get_parents
         self.parents.map {|p| "\"#{p.title}\""}.join(',')
     end
     def is_blocked
