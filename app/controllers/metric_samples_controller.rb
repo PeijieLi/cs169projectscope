@@ -7,18 +7,20 @@ class MetricSamplesController < ApplicationController
       @metrics.flat_map { |m| project.metric_on_date m, date }
     end
   end
+  
+  def mark_read
+    metric_sample = MetricSample.find_by(id: params["id"].to_i)
+    for cmnt in metric_sample.comments
+      cmnt.update({ status: 'read' })
+    end
+    @comment = cmnt
+    render "comments/show/", status: :ok, location: cmnt
+  end
 
   private
 
   def date
     @days_from_now = params[:days_from_now] ? params[:days_from_now].to_i : 0
     Date.today - @days_from_now.days
-  end
-  
-  def mark_read
-    metric_sample = MetricSample.select(params["sample_id"])
-    for cmnt in metric_sample.comments
-      cmnt.update({ status: 'read' })
-    end
   end
 end

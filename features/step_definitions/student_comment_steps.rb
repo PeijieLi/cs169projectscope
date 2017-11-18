@@ -11,8 +11,7 @@ Given(/the following users exist:/) do |users_table|
                  email: user["email"],
                  provider: user["provider"]
                  )
-    puts(u.project.id)
-    puts(MetricSample.find_by(metric_name: "code_climate").project_id)
+
   end
 end
 
@@ -29,7 +28,7 @@ end
 
 Given(/the following metrics samples exist:/) do |metrics_table|
   
-  d = Date.today
+  d = DateTime.now
   metrics_table.hashes.each do |metric|
     m = MetricSample.create!(:metric_name => metric["metric_name"],
                              :project_id => Project.find_by(name: metric["project"]).id,
@@ -81,16 +80,23 @@ Given(/there is a "(.*)" comment "(.*)" on project "(.*)" metric "(.*)"/) do |us
 end
 
 When /^(?:|I )fill in the "([^"]*)" comment box with "([^"]*)"$/ do |num, value|
-  num = num[0].to_i - 1
-  within("form#comment_form_#{num}") do
-    fill_in("content", :with => value)
+  num = num[0].to_i 
+  within("form#sample_#{num}_form",  visible: false) do
+    fill_in("content", :with => value,  visible: false)
+  end
+end
+
+When /^(?:|I )click the "(.*)" "(.*)" link/ do |num, link|
+  num = num[0].to_i 
+  within("tr#buttons_#{num}") do
+    find("#add_reply_button").click
   end
 end
 
 When /^(?:|I )submit form number "(.*)"$/ do |num|
-  num = num.to_i - 1
-  within("form#comment_form_#{num}") do
-    click_button("Submit")
+  num = num.to_i 
+  within("form#sample_#{num}_form",  visible: false) do
+    click_button("Reply",  visible: false)
   end
 end
 

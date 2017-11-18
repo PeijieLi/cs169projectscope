@@ -6,6 +6,7 @@
 class Task < ActiveRecord::Base
     has_many :parents, class_name: "Task"
     belongs_to :iteration
+    has_many :comments
     # add an existing tasks to parents tasks
     def add_parent(p)
         self.parents.push(p)

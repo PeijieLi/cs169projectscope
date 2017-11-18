@@ -2,14 +2,19 @@ class StudentTaskController < ApplicationController
     #load the form for new task
     #show the tasks for a team for a selected the iteration
     def index
-        team = current_user.project
-        iter = params[:iter]
+        @team = current_user.project
+        @iter = params[:iter]
+        @iteration = Iteration.find_by(id: @iter)
+        @project = @team
+        
+        @iteration_comments = @iteration.get_comments(@team)
+        
         #testing only purpose
-        if team==nil
-            team = Project.all[0]
+        if @team==nil
+            @team = Project.all[0]
         end
         
-        @tasks = StudentTask.topological_sort(iter, team.id)
+        @tasks = StudentTask.topological_sort(@iter, @team.id)
         #to do : display the tasks in the view
         
     end
@@ -125,8 +130,12 @@ class StudentTaskController < ApplicationController
     #show the detailed graph of a team for instructor
     def showATeamForInstructor
         @team = Project.find(params[:team])
-        iter = params[:iter]
-        @tasks = StudentTask.topological_sort(iter, @team.id)
+        @iter = params[:iter]
+        @tasks = StudentTask.topological_sort(@iter, @team.id)
+        @iteration = Iteration.find_by(id: @iter)
+        @project = @team
+        @iteration_comments = @iteration.get_comments(@team)
+
         #todo: diplay the tasks 
     end
 end

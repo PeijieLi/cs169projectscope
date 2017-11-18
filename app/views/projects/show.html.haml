@@ -10,25 +10,24 @@
 %div.col-md-6
   %h2
     Comments
-  %table.table.table-striped
+  %table.table
     %tbody
       - num = 0
-      - @project.metrics_with_unread_comments.each do |sample|
-        %tr{id: "sample_#{sample.id}", class: "sample_row_#{sample.id}"}
-          %td{style: 'text-align: center'}
-            %div.chart_place{:id => "project-#{@project.id}-ondate-#{sample.metric_name}-#{sample.days_ago}"}
-        - sample.comments.where(ctype: 'general_comment').each do |cmnt|
-          %tr{id: "comment_#{cmnt.id}", class: "sample_row_#{sample.id}"}
-            %td
-              = render partial: 'comment_view', :locals => {:comment => cmnt}
-            %td.btn-default.btn.btn-sm{onclick: "read_comment(#{cmnt.id})"}
-              Mark as read
-        %tr{id: "comment_form_#{sample.id}", class: "sample_row_#{sample.id}"}
+      - @general_comment_groups.each do |comment_group|
+        %tr
           %td
-            = render partial: 'comment_form', :locals => { :identity => "project-#{@project.id}-ondate-#{sample.metric_name}-#{sample.days_ago}", 
-                                                            :num => "#{num}", 
-                                                            :ms_id => sample.id, 
-                                                            :button_name => "Reply"}
+            = render partial: 'comment_thread', :locals => {:object => @project,
+                                                            :comments => comment_group,
+                                                            :thread_type => "general_metric"}
+      - @comment_groups.each do |mc_pair|
+        %tr
+          %td
+
+            = render partial: 'comment_thread', :locals => {:days_ago => mc_pair.first,
+                                                            :object => mc_pair.second, 
+                                                            :comments => mc_pair.third,
+                                                            :thread_type => "sample"}
+                                                            
         - num += 1
           
 -#      - @project.comments.select(&:unread?).each do |cmnt|
@@ -40,7 +39,29 @@
 -#            = render partial: 'comment_view', :locals => {:comment => cmnt}
 -#          %td.btn-default.btn.btn-sm{onclick: "read_comment(#{cmnt.id})"}
 -#            Mark as read
-            
+
+-#        %tr{id: "sample_#{sample.id}", class: "sample_row_#{sample.id}"}
+-#          %td{style: 'text-align: center'}
+-#            %div.chart_place{:id => "project-#{@project.id}-ondate-#{sample.metric_name}-#{sample.days_ago}"}
+-#        - sample.comments.where(ctype: 'general_comment').each do |cmnt|
+-#          %tr{id: "comment_#{cmnt.id}", class: "sample_row_#{sample.id}"}
+-#            %td
+-#              = render partial: 'comment_view', :locals => {:comment => cmnt}
+-#        %tr{id: "buttons_#{num}", class: "sample_row_#{sample.id}"}
+-#          %td
+-#            %a#mark_read_button.function_link{onclick: "read_sample(#{sample.id})"}
+-#              Mark All Read
+-#            %a#add_reply_button.function_link{onclick: "reveal_comment_form(#{sample.id})"}
+-#              Add Reply
+-#        %tr{id: "comment_form_#{sample.id}", class: "sample_row_#{sample.id}", style:"display:none"}
+-#          %td
+-#            = render partial: 'comment_form', :locals => { :identity => "project-#{@project.id}-ondate-#{sample.metric_name}-#{sample.days_ago}", 
+-#                                                            :num => "#{num}", 
+-#                                                            :ms_id => sample.id, 
+-#                                                            :button_name => "Reply"}
+-#        %tr
+-#          %td
+-#            %br
 
 - metric_names = ProjectMetrics.hierarchies :metric
 %div.col-md-6

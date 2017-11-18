@@ -15,11 +15,12 @@ class Project < ActiveRecord::Base
   has_and_belongs_to_many :users
   has_many :ownerships
   has_many :owners, :class_name => "User", :through => :ownerships, :source => :user
+  has_many :comments
 
   validates :name, :presence => true, :uniqueness => true
 
   accepts_nested_attributes_for :configs
-  attr_accessible :name, :configs_attributes
+  attr_accessible :name, :configs_attributes[0]
 
   scope :order_by_metric_score, -> (metric_name, order) {
     joins(:metric_samples).where("metric_samples.metric_name = ?", metric_name)
@@ -108,7 +109,24 @@ class Project < ActiveRecord::Base
     metric_samples.flat_map { |ms| ms.comments.where(ctype: 'general_comment') }.sort_by { |cmnt| Time.now - cmnt.created_at }
   end
   
+  def general_metric_comments 
+    Comment.where(project_id: self.id)
+  end
+  
   def metrics_with_unread_comments
     metric_samples.select{|ms| ms.comments.where(ctype: 'general_comment').any?(&:unread?)}.sort_by {|ms| ms.comments.min_by{ Time.now - created_at}}
+  end
+  
+  def general_metrics_with_unread_comments
+    metric_names = ProjectMetrics.hierarchies :metric
+    comment_groups = []
+    
+    for metric in metric_names
+      if comments.any?{|comment| comment["status"] == :unread}
+        comment_groups << comments.where(ctype: 'general_comment', metric: metric)
+      end
+    end
+    
+    comment_groups
   end
 end

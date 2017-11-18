@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171106064443) do
+ActiveRecord::Schema.define(version: 20171112022616) do
 
   create_table "comments", force: :cascade do |t|
     t.integer  "metric_sample_id"
@@ -22,9 +22,16 @@ ActiveRecord::Schema.define(version: 20171106064443) do
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
     t.string   "status",           default: "unread"
+    t.integer  "project_id"
+    t.integer  "task_id"
+    t.integer  "iteration_id"
+    t.string   "metric"
   end
 
+  add_index "comments", ["iteration_id"], name: "index_comments_on_iteration_id"
   add_index "comments", ["metric_sample_id"], name: "index_comments_on_metric_sample_id"
+  add_index "comments", ["project_id"], name: "index_comments_on_project_id"
+  add_index "comments", ["task_id"], name: "index_comments_on_task_id"
   add_index "comments", ["user_id"], name: "index_comments_on_user_id"
 
   create_table "configs", force: :cascade do |t|

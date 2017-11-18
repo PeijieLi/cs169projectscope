@@ -211,15 +211,15 @@ function read_comment(comment_id) {
     });
 }
 
-/*
-function read_sample(sample_id) {
+
+function read_sample(sample_id, metric_name) {
     $.ajax({
         url: "/metric_samples/" + sample_id + "",
-        type: 'POST',
-        data: { metric_sample: {sample_id: sample_id}},
+        type: 'PUT',
+        data: { comment: { status: 'read' } },
         dataType: "json",
         success: function (result) {
-            $('.sample_row_#{sample_id}').remove();
+            $(".sample_" + sample_id + "_row").remove();
         },
         error: function (a, b, c) {
             console.log(a);
@@ -228,7 +228,61 @@ function read_sample(sample_id) {
         }
     });
 }
-*/
+
+function read_general_metric(project_id, metric_name) {
+    $.ajax({
+        url: "/projects/" + project_id + "/" + metric_name + "/read_comments",
+        type: 'PUT',
+        data: { comment: { status: 'read' } },
+        dataType: "json",
+        success: function (result) {
+            $(".general_metric_" + project_id + "_row").remove();
+        },
+        error: function (a, b, c) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+        }
+    });
+}
+
+//function read_iteration(project_id, iteration_id) {
+//    $.ajax({
+//        url: "/projects/" + project_id + "/" + iteration_id + "/read_comments",
+//        type: 'PUT',
+//        data: { comment: { status: 'read' } },
+//        dataType: "json",
+//        success: function (result) {
+//            $(".iteration_" + project_id + "_row").remove();
+//        },
+//        error: function (a, b, c) {
+//            console.log(a);
+//            console.log(b);
+//            console.log(c);
+//        }
+//    });
+//}
+
+
+function toggle_element(element_id, toggle_link_id) {
+    var element = document.getElementById(element_id);
+    var link = document.getElementById(toggle_link_id)
+    
+    console.log(element_id)
+    console.log(link.id)
+
+    if (element.style.display == 'table-row'){
+        element.style.display = 'None'
+        link.innerHTML = "Add Reply"
+    } 
+
+    else if (element.style.display == 'none'){
+        element.style.display = 'table-row'
+        link.innerHTML = "Cancel Reply"
+    }
+
+}
+
 function write_log(msg) {
     $.ajax({
         url: "/log",

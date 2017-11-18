@@ -6,6 +6,7 @@ class StudentTask < ActiveRecord::Base
         self.parents.push(p)
         self.save
     end
+  
     def self.topological_sort(iter_id,team_id)
         tasks = StudentTask.where('iteration_id': iter_id, 'project_id': team_id)
         result = []
@@ -26,6 +27,7 @@ class StudentTask < ActiveRecord::Base
         end
         return true
     end
+
     def get_parents
         self.parents.map {|p| "\"#{p.title}\""}.join(',')
     end

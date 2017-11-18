@@ -1,21 +1,31 @@
-%table.table.table-striped#Tasks
-    %thead
-        %h2 Tasks:
-        %tr
-            %th= "Title"
-            %th="Description"
-            %th="Parents"
-            %th="Status"
-    %tbody        
-        - @tasks.each do |t|
+%div.col-xs-6
+    %table.table.table-striped#Tasks
+        %thead
+            %h2 Tasks:
             %tr
-                %td= link_to t.title, detail_history_path(t.id)
-                %td= t.description
-                %td= t.get_parents
-                %td= t.status
-                %td
+                %th= "Title"
+                %th="Description"
+                %th="Parents"
+                %th="Status"
+        %tbody        
+            - @tasks.each do |t|
+                %tr
+                  %td= link_to t.title, detail_history_path(t.id)
+                  %td= t.description
+                  %td= t.get_parents
+                  %td= t.status
+                  %td
                     - if !t.is_blocked
                         = form_tag update_status_path(t.id), :method => :put, :name =>"form:"+t.title do 
                             = select_tag((t.title+"status").to_sym, options_for_select([["In Screen", "In Screen"], ["In Process", "In Process"], ["Finished", "Finished"]]))
                             = submit_tag 'Save For '+t.title, :class => "btn btn-primary left"
+                        
+%div.col-xs-4
+    %div
+        %h2
+            Comments
+            
+        = render partial: 'projects/comment_thread', :locals => {:comments => @iteration_comments,
+                                                                :object => @iteration,
+                                                                :thread_type => "iteration"}
                 

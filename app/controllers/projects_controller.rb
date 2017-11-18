@@ -34,6 +34,16 @@ class ProjectsController < ApplicationController
     @display_type = params.has_key?(:type) ? (params[:type]) : 'metric'
     metric_min_date = MetricSample.min_date || Date.today
     @num_days_from_today = (Date.today - metric_min_date).to_i
+    
+    @comment_groups = @project.metrics_with_unread_comments
+    
+    @comment_groups = @comment_groups.map do |metric_sample|
+      [days_ago(metric_sample.created_at),
+      metric_sample,
+      metric_sample.comments.where(ctype: 'general_comment').sort_by { |elem| elem.created_at - Time.now}]
+    end
+    
+    @general_comment_groups = @project.general_metrics_with_unread_comments
   end
 
   # GET /projects/new
@@ -121,8 +131,12 @@ class ProjectsController < ApplicationController
 
     @comments = @project.metric_samples.where(metric_name: @metric_name).sort_by { |elem| Time.now-elem.created_at }
     @comments = @comments.map do |metric_sample|
-      [days_ago(metric_sample.created_at), metric_sample.comments.select(&:general_comment?), metric_sample.id]
+      [days_ago(metric_sample.created_at), 
+      metric_sample, 
+      metric_sample.comments.where(ctype: 'general_comment').sort_by { |elem| elem.created_at - Time.now}]
     end
+    
+    @general_metric_comments = @project.general_metric_comments.where(metric: @metric_name).sort_by { |elem| elem.created_at - Time.now }
 
     @parent_metric = @project.latest_metric_sample params[:metric]
     render template: 'projects/metric_detail'
@@ -186,6 +200,18 @@ class ProjectsController < ApplicationController
   def write_log
     logger.info "Log from remote: #{params['message']}"
     render json: { message: 'Success' }
+  end
+  
+  def mark_read
+    project = Project.find_by(id: params["id"].to_i)
+    comments = project.comments
+    for cmnt in comments
+      if cmnt.metric == params["metric"]
+        cmnt.update({ status: 'read' })
+      end
+    end
+    @comment = cmnt
+    render "comments/show/", status: :ok, location: cmnt
   end
 
   private

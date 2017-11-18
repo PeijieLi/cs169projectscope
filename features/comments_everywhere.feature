@@ -3,6 +3,8 @@ Feature: Students and Instructors can add comments to tasks, general metrics and
   As a student or instructor,
   So that I can add information regarding tasks, general metrics and iterations,
   I want to be able to add comments in any of these locations
+
+Background: users and project in the data base
   
   Given the following projects exist:
   | name      |
@@ -10,24 +12,40 @@ Feature: Students and Instructors can add comments to tasks, general metrics and
   | Project_2 |
 
   Given the following iterations exist:
-  | iteration_name | project   |
-  | iteration_01   | Project_1 |
-  | iteration_11   | Project_1 |
-  | iteration_02   | Project_2 |
-  | iteration_12   | Project_2 |
+  | iteration_name |
+  | iteration_01   |
+  | iteration_11   |
+  | iteration_02   |
+  | iteration_12   |
+
+Given the following metrics samples exist:
+  | metric_name  | project   | score |
+  | code_climate | Project_1 | 137   |
+  | github       | Project_1 | 3     |
+  | code_climate | Project_1 | 200   |
 
   Given the following tasks exist:
-  | title    | iteration_id | task_id |
-  | first_1  | iteration_01 | first_1 |
-  | second_1 | iteration_01 | first_1 |
-  | first_2  | iteration_02 | first_2 |
-  | second_2 | iteration_02 | first_2 |
+  | title    | iteration_id | task_id | project   |
+  | first_1  | iteration_01 | first_1 | Project_1 |
+  | second_1 | iteration_01 | first_1 | Project_1 |
+  | first_2  | iteration_02 | first_2 | Project_1 |
+  | second_2 | iteration_02 | first_2 | Project_1 |
 
   Given the following users exist:
   | provider_username       | uid         | email                 | provider  | role    | project   |
   | Admin                   | uadmin      | uadmin@example.com    | developer | admin   | Project_1 |
   | Student                 | ustudent    | ustudent@example.com  | developer | student | Project_1 |
   | Student2                | ustudent2   | ustudent2@example.com | developer | student | Project_2 |
+
+Scenario: add admin comment to a general metric
+  Given I am "uadmin" and logged in
+  And I am on the "view project 'Project_1'" page
+  And I follow "Code Climate"
+  And I fill in the box for general comment with "this is an admin comment on a general metric"
+  And I submit general comment form
+  And I follow "Project_1"
+  And I follow "Code Climate"
+  Then I should see "this is an admin comment on a general metric"
   
 @wip
 Scenario: add admin comment to a task
@@ -53,43 +71,31 @@ Scenario: add student commment to a task
   And I press "Submit"
   Then I should see "this is a student comment on a task"
   
-@wip
 Scenario: add admin comment to iteration
   Given I am "uadmin" and logged in
-  And I am on the "iteration_01" page
-  Then I should see "Project_1"
-  Then I should see "add_comment"
-  And I fill in "content" with "this is an admin comment on iteration_01"
-  And I press "Submit"
-  Then I should see "this is an admin comment on iteration_01"
-  
-@wip
-Scenario: add student comment to iteration
-  Given I am "ustudent" and logged in
-  And I am on the "Project_1, iteration_01" page
-  Then I should see "add_comment"
-  And I fill in "content" with "this is a student comment on an iteration"
-  And I press "Submit"
+  And I am on the "admin task index page for iteration 'iteration_01' and 'Project_1'"
+  Then I should see "Add Reply"
+  And I fill in the box for iteration comment with "this is a student comment on an iteration"
+  And I submit iteration comment form
+  And I am on the "admin task index page for iteration 'iteration_01' and 'Project_1'"
   Then I should see "this is a student comment on an iteration"
   
-@wip
-Scenario: add admin comment to a general metric
-  Given I am "uadmin" and logged in
-  And I am on the "view project 'Project_1'" page
-  And I follow "Code Climate"
-  Then I should see "Submit"
-  And I fill in the"general" comment box with "this is an admin comment on a general metric"
-  And I press "Submit"
-  Then I should see "this is an admin comment on a general metric"
+Scenario: add student comment to iteration
+  Given I am "ustudent" and logged in
+  And I am on the "student task index page for iteration 'iteration_01'"
+  Then I should see "Add Reply"
+  And I fill in the box for iteration comment with "this is a student comment on an iteration"
+  And I submit iteration comment form
+  And I am on the "student task index page for iteration 'iteration_01'"
+  Then I should see "this is a student comment on an iteration"
   
-@wip
 Scenario: add student commment to a general metric
   Given I am "ustudent" and logged in
   And I am on the "view project 'Project_1'" page
   And I follow "Code Climate"
-  Then I should see "Submit"
-  And I fill in the "general" comment box with "this is a student comment on a general metric"
-  And I press "Submit"
-  Then I should see "this is a student comment on a general metric"
+  And I fill in the box for general comment with "this is an admin comment on a general metric"
+  And I submit general comment form
+  And I follow "Code Climate"
+  Then I should see "this is an admin comment on a general metric"
 
   

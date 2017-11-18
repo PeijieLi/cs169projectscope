@@ -43,9 +43,11 @@ module NavigationHelpers
         edit_iteration_path($1)
       when /^the "iteration_(.*) edit" page/ then
         edit_iteration_path($1)
-
+      when /^the "student task index page for iteration '(.*)'"/ then
+        team_index_path(Iteration.find_by_name($1).id)
+      when /^the "admin task index page for iteration '(.*)' and '(.*)'"/ then
+        show_a_team_path(Iteration.find_by_name($1).id, Project.find_by_name($2).id)
       when /^task creation page for "(.*)"/ then
-      
         new_task_view_path(Iteration.find_by_name($1).id)
       when /^the showing "(.*)" page/ then
         show_iteration_path(Iteration.find_by_name($1).id)

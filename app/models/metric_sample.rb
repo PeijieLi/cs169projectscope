@@ -30,5 +30,9 @@ class MetricSample < ActiveRecord::Base
   def days_ago
     (Date.today - created_at.to_date).to_i
   end
+  
+  def name
+    metric_name
+  end
 
 end

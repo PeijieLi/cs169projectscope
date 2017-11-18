@@ -1,10 +1,12 @@
 class IterationsController < ApplicationController
+  
   def show
     @iteration = Iteration.find(params[:id])
     @tasks = Task.where('iteration_id': @iteration.id)
     @teams = Project.all
     @student_tasks = StudentTask.where('iteration_id': @iteration.id)
   end
+  
   def index
     puts current_user.role
     if current_user.is_student?
@@ -22,6 +24,7 @@ class IterationsController < ApplicationController
     n = Iteration.create!(:name => "new_iteration", :start => Date.today, :end => Date.today + 7)
     redirect_to edit_iteration_path(n.id)
   end
+  
   def student_show
     @iterations = Iteration.order(id: :asc).reverse_order.limit(10)
   end
